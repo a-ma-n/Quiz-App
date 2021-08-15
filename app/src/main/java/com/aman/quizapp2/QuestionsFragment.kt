@@ -28,6 +28,8 @@ class QuestionsFragment : Fragment() {
     var index = 0
     var reward = 0
 
+    val rewardBool = arrayOf(false,false,false,false,false,false,false,false,false,false,false)
+
     lateinit var desc: TextView
     lateinit var op1: Button
     lateinit var op2: Button
@@ -43,12 +45,37 @@ class QuestionsFragment : Fragment() {
     lateinit var nextButton: Button
     lateinit var prevButton: Button
     lateinit var cnt: TextView
+    var usrAns:String="abc"
+//    var cnt
+
+    companion object {
+        lateinit var value:CountDownTimer
+    }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
+        var view = inflater.inflate(R.layout.fragment_questions, container, false)
+
+
+
+
+         value = object : CountDownTimer(30000, 1000){
+            override fun onTick(millisUntilFinished: Long) {
+                cnt.setText("seconds : " + millisUntilFinished / 1000)
+            }
+
+            override fun onFinish() {
+                cnt.setText("done!")
+                next(view)
+            }
+        }
+
+//        value.onFinish(view)
 
 //        database.child("question1").get().addOnSuccessListener {
 //            Log.d("firebase", "Got value ${it.value}")
@@ -58,7 +85,6 @@ class QuestionsFragment : Fragment() {
 
         database = Firebase.database.reference
 
-        var view = inflater.inflate(R.layout.fragment_questions, container, false)
 
         render(view)
 
@@ -70,22 +96,11 @@ class QuestionsFragment : Fragment() {
             op4.setVisibility(View.INVISIBLE)
         }
 
-        object : CountDownTimer(30000, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                cnt.setText("seconds : " + millisUntilFinished / 1000)
-            }
-
-            override fun onFinish() {
-                cnt.setText("done!")
-                next(view)
-            }
-        }.start()
-
-
 
         nextButton.setOnClickListener()
         {
+            value.cancel()
+            value.start()
             next(view)
         }
         prevButton.setOnClickListener()
@@ -99,43 +114,46 @@ class QuestionsFragment : Fragment() {
     private fun next(view: View) {
         index++
         if (index == 11) {
-            val bundle = bundleOf("reward" to reward.toString())
+            val trueCount = rewardBool.count { it }
+            Log.e(TAG, "index 11:$trueCount ", )
+
+
+            val bundle = bundleOf("reward" to trueCount.toString())
             Navigation.findNavController(view)
                 .navigate(R.id.action_questionsFragment_to_resultsFragment, bundle)
         }
-
 
         var q = "question" + index
 
         database.child(q).get().addOnSuccessListener {
             Log.d("firebase", "Got value ${it.value}")
             if (it.exists()) {
+
                 prevButton.setVisibility(View.VISIBLE)
                 op1.setVisibility(View.VISIBLE)
                 op2.setVisibility(View.VISIBLE)
                 op3.setVisibility(View.VISIBLE)
                 op4.setVisibility(View.VISIBLE)
 
+                    d = it.child("description").value as String
+                    o1 = it.child("option1").value as String
+                    o2 = it.child("option2").value as String
+                    o3 = it.child("option3").value as String
+                    o4 = it.child("option4").value as String
+                    ans = it.child("answer").value as String
 
-                 d = it.child("description").value as String
-                 o1 = it.child("option1").value as String
-                 o2 = it.child("option2").value as String
-                 o3 = it.child("option3").value as String
-                 o4 = it.child("option4").value as String
-                 ans = it.child("answer").value as String
 
 
-                desc.setText(d)
-                op1.setText(o1)
-                op2.setText(o2)
-                op3.setText(o3)
-                op4.setText(o4)
+                    desc.setText(d)
+                    op1.setText(o1)
+                    op2.setText(o2)
+                    op3.setText(o3)
+                    op4.setText(o4)
 
-                buttonClick(view)
+                    buttonClick(view)
+//                    chk()
             }
-        }
-
-
+            }
     }
 
     private fun prev(view: View) {
@@ -177,25 +195,52 @@ class QuestionsFragment : Fragment() {
             cnt = view.findViewById(R.id.countdownCount)
         }
 
+        private fun chk()
+        {
+            if(usrAns==ans)
+            {
+                rewardBool[index]=true
+                Log.e(TAG, "$usrAns: true ", )
+            }
+            else
+            {
+                Log.e(TAG, "\n $usrAns: false ", )
+            }
+        }
+
          fun buttonClick(view: View) {
             op1.setOnClickListener()
             {
-                if (ans == o1) {
-                    reward++
-                }
+                usrAns=o1
+                chk()
+
             }
             op2.setOnClickListener()
             {
-                if (ans == o2) {
-                    reward++
-                }
+                usrAns=o2
+                chk()
+
+//                if (ans == o2) {
+//                    reward++
+//                }
             }
             op3.setOnClickListener()
             {
-                if (ans == o3) {
-                    reward++
-                }
+                usrAns=o3
+                chk()
+//                if (ans == o3) {
+//                    reward++
+//                }
             }
+             op4.setOnClickListener()
+             {
+                 usrAns=o4
+                 chk()
+//
+//                 if (ans == o3) {
+//                     reward++
+//                 }
+             }
         }
 
     }
