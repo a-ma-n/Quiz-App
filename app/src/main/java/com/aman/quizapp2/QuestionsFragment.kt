@@ -10,17 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_questions.*
+import android.view.animation.AnimationUtils
+import androidx.compose.ui.graphics.Color.Companion.Green
 
 
 class QuestionsFragment : Fragment() {
@@ -66,11 +64,10 @@ class QuestionsFragment : Fragment() {
 
          value = object : CountDownTimer(30000, 1000){
             override fun onTick(millisUntilFinished: Long) {
-                cnt.setText("seconds : " + millisUntilFinished / 1000)
+                cnt.setText(""+millisUntilFinished / 1000)
             }
 
             override fun onFinish() {
-                cnt.setText("done!")
                 next(view)
             }
         }
@@ -99,6 +96,7 @@ class QuestionsFragment : Fragment() {
 
         nextButton.setOnClickListener()
         {
+
             value.cancel()
             value.start()
             next(view)
@@ -112,6 +110,13 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun next(view: View) {
+        val blue: Int = resources.getColor(R.color.purple_500)
+
+        op1.setBackgroundColor(blue)
+        op2.setBackgroundColor(blue)
+        op3.setBackgroundColor(blue)
+        op4.setBackgroundColor(blue)
+
         index++
         if (index == 11) {
             val trueCount = rewardBool.count { it }
@@ -142,8 +147,13 @@ class QuestionsFragment : Fragment() {
                     o4 = it.child("option4").value as String
                     ans = it.child("answer").value as String
 
-
-
+                val fadein = AnimationUtils.loadAnimation(context, R.anim.fade_in)
+                desc.startAnimation(fadein)
+                op1.startAnimation(fadein)
+                op2.startAnimation(fadein)
+                op3.startAnimation(fadein)
+                op4.startAnimation(fadein)
+                cnt.startAnimation(fadein)
                     desc.setText(d)
                     op1.setText(o1)
                     op2.setText(o2)
@@ -177,6 +187,7 @@ class QuestionsFragment : Fragment() {
                 op2.setText(o2)
                 op3.setText(o3)
                 op4.setText(o4)
+
 
                 buttonClick(view)
             }
@@ -213,12 +224,29 @@ class QuestionsFragment : Fragment() {
             {
                 usrAns=o1
                 chk()
+                val blue: Int = resources.getColor(R.color.purple_500)
+
+                val animationFadeIn = AnimationUtils.loadAnimation(context, R.anim._rotate)
+                op1.startAnimation(animationFadeIn)
+                op1.setBackgroundColor(Color.GREEN)
+                op2.setBackgroundColor(blue)
+                op3.setBackgroundColor(blue)
+                op4.setBackgroundColor(blue)
+
 
             }
             op2.setOnClickListener()
             {
                 usrAns=o2
                 chk()
+                val blue: Int = resources.getColor(R.color.purple_500)
+
+                val animationFadeIn2 = AnimationUtils.loadAnimation(context, R.anim.bounce)
+                op2.startAnimation(animationFadeIn2)
+                op1.setBackgroundColor(blue)
+                op2.setBackgroundColor(Color.GREEN)
+                op3.setBackgroundColor(blue)
+                op4.setBackgroundColor(blue)
 
 //                if (ans == o2) {
 //                    reward++
@@ -228,6 +256,15 @@ class QuestionsFragment : Fragment() {
             {
                 usrAns=o3
                 chk()
+                val animationFadeIn = AnimationUtils.loadAnimation(context, R.anim._rotate)
+                animationView.startAnimation(animationFadeIn)
+                val blue: Int = resources.getColor(R.color.purple_500)
+
+                op1.setBackgroundColor(blue)
+                op2.setBackgroundColor(blue)
+                op3.setBackgroundColor(Color.GREEN)
+                op4.setBackgroundColor(blue)
+
 //                if (ans == o3) {
 //                    reward++
 //                }
@@ -236,7 +273,12 @@ class QuestionsFragment : Fragment() {
              {
                  usrAns=o4
                  chk()
-//
+                 val blue: Int = resources.getColor(R.color.purple_500)
+
+                 op1.setBackgroundColor(blue)
+                op2.setBackgroundColor(blue)
+                op3.setBackgroundColor(blue)
+                op4.setBackgroundColor(Color.GREEN)
 //                 if (ans == o3) {
 //                     reward++
 //                 }

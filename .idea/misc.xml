@@ -5,9 +5,10 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/card.xml" value="0.19167820612589517" />
-        <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.1890909090909091" />
+        <entry key="app/src/main/res/layout/fragment_questions.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_questions2.xml" value="0.14791666666666667" />
         <entry key="app/src/main/res/layout/fragment_results.xml" value="0.2290401248099557" />
+        <entry key="app/src/main/res/layout/fragment_splash_sc.xml" value="0.19230769230769232" />
       </map>
     </option>
   </component>
